@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="sa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>श्रीमद्रामायणम् - Valmiki Ramayana</title>
+    <style>
+        :root {
+            --bg-color: #fdfaf2;
+            --panel-bg: #ffffff;
+            --text-color: #2c1a04;
+            --accent-color: #b85c00;
+            --border-color: #e6d3b3;
+            --hover-color: #fff5e6;
+        }
+
+        body {
+            font-family: 'Georgia', 'Noto Serif Devanagari', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Top Horizontal Control Header Banner */
+        header {
+            background-color: var(--panel-bg);
+            border-bottom: 2px solid var(--border-color);
+            padding: 12px 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .control-container {
+            max-width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            align-items: center;
+            justify-content: flex-start; /* Aligns all controls horizontally to the left */
+        }
+
+        .brand-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-right: 15px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center; /* Horizontally lines up labels with selects */
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #665544;
+        }
+
+        select {
+            padding: 6px 12px;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: #fff;
+            color: var(--text-color);
+            outline: none;
+            cursor: pointer;
+            min-width: 150px;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            border-color: var(--accent-color);
+        }
+
+        /* Split-Frame Layout Dynamic Core */
+        .main-frame {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Left Side Navigation Index Panel */
+        .index-panel {
+            width: 180px;
+            border-right: 1px solid var(--border-color);
+            background-color: #f9f5ec;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .index-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .index-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            text-align: center; /* Centered index values per your markup design */
+            border-bottom: 1px solid rgba(230, 211, 179, 0.4);
+            transition: background 0.2s;
+        }
+
+        .index-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .index-item.active {
+            background-color: var(--accent-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Right Content Panel Display Workspace */
+        .content-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px 50px;
+            background-color: var(--panel-bg);
+        }
+
+        .shloka-container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        /* Interlinear Dynamic Typography & Section Cards */
+        .shloka-card {
+            margin-bottom: 45px;
+            padding-bottom: 35px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        /* Larger, bold standalone Sanskrit text styling */
+        .shloka-text {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: #000000;
+            font-weight: bold; /* Bolded verse line display */
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .transliteration {
+            font-style: italic;
+            color: #444444;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .meaning-section {
+            margin-top: 15px;
+        }
+
+        .section-block {
+            margin-bottom: 18px;
+        }
+
+        .meaning-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .word-meaning {
+            background-color: #faf7f2;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #2c1a04;
+        }
+
+        .explanation {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #111111;
+        }
+
+        .comments {
+            margin-top: 15px;
+            background-color: #f0f4f8;
+            border-left: 3px solid #4a7c59;
+            padding: 12px 20px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+
+        .status-message {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #776655;
+            margin-top: 50px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .main-frame {
+                flex-direction: column;
+            }
+            .index-panel {
+                width: 100%;
+                max-height: 120px;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .content-panel {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="control-container">
+            <div class="brand-title">श्रीमद्रामायणम्</div>
+            
+            <div class="filters">
+                <div class="form-group">
+                    <label for="kandaSelect">Kanda:</label>
+                    <select id="kandaSelect" onchange="onKandaChange()"></select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sargaSelect">Sarga:</label>
+                    <select id="sargaSelect" onchange="onSargaChange()"></select>
+                </div>
+
+                <div class="form-group">
+                    <label for="viewMode">Display Mode:</label>
+                    <select id="viewMode" onchange="renderShlokas()">
+                        <option value="all">Sanskrit Text with Meaning</option>
+                        <option value="sanskrit">Sanskrit Text Only</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-frame">
+        <div class="index-panel">
+            <ul class="index-list" id="verseIndex"></ul>
+        </div>
+
+        <div class="content-panel">
+            <div class="shloka-container" id="shlokaContainer">
+                <div class="status-message">Loading Ramayana repository dataset...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ramayanaData = [];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchLocalData();
+        });
+
+        function fetchLocalData() {
+            fetch('data.json')
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    ramayanaData = data;
+                    initializeApplication();
+                })
+                .catch(error => {
+                    console.error("Failed to parse JSON file feed:", error);
+                    document.getElementById('shlokaContainer').innerHTML = `
+                        <div class="status-message" style="color: red;">
+                            <strong>Error loading database!</strong><br>
+                            Ensure 'data.json' occupies the same target folder directory path.<br>
+                            <small style="color: #666; font-size: 0.85rem; display:block; margin-top:10px;">
+                                Details: ${error.message}
+                            </small>
+                        </div>`;
+                });
+        }
+
+        function initializeApplication() {
+            const uniqueKandas = [...new Set(ramayanaData.map(item => item.kanda))];
+            
+            if (uniqueKandas.length === 0) {
+                document.getElementById('shlokaContainer').innerHTML = `<div class="status-message">The loaded dataset is empty.</div>`;
+                return;
+            }
+
+            const kandaSelect = document.getElementById('kandaSelect');
+            kandaSelect.innerHTML = uniqueKandas.map(k => `<option value="${k}">${k}</option>`).join('');
+            
+            onKandaChange();
+        }
+
+        function onKandaChange() {
+            const selectedKanda = document.getElementById('kandaSelect').value;
+            
+            const filteredSargas = [...new Set(ramayanaData
+                .filter(item => item.kanda === selectedKanda)
+                .map(item => item.sarga)
+            )].sort((a, b) => a - b);
+
+            const sargaSelect = document.getElementById('sargaSelect');
+            sargaSelect.innerHTML = filteredSargas.map(s => `<option value="${s}">Sarga ${s}</option>`).join('');
+            
+            onSargaChange();
+        }
+
+        function onSargaChange() {
+            renderShlokas();
+            renderSidebarIndex();
+        }
+
+        function getActiveDataset() {
+            const currentKanda = document.getElementById('kandaSelect').value;
+            const currentSargaString = document.getElementById('sargaSelect').value;
+            if(!currentSargaString) return [];
+            
+            const currentSarga = parseInt(currentSargaString, 10);
+            return ramayanaData.filter(item => item.kanda === currentKanda && item.sarga === currentSarga);
+        }
+
+        function renderSidebarIndex() {
+            const currentVerses = getActiveDataset();
+            const indexList = document.getElementById('verseIndex');
+            
+            indexList.innerHTML = currentVerses.map((v, index) => {
+                return `<li class="index-item ${index === 0 ? 'active' : ''}" 
+                            id="idx-${v.shloka}" 
+                            onclick="scrollToShloka('${v.shloka}')">
+                            Verse ${v.shloka}
+                        </li>`;
+            }).join('');
+        }
+
+        function renderShlokas() {
+            const activeVerses = getActiveDataset();
+            const viewMode = document.getElementById('viewMode').value;
+            const container = document.getElementById('shlokaContainer');
+            
+            if (activeVerses.length === 0) {
+                container.innerHTML = `<p style="text-align:center;color:#888;">No verses match selected configuration criteria.</p>`;
+                return;
+            }
+
+            container.innerHTML = activeVerses.map(v => {
+                const isSanskritOnly = (viewMode === 'sanskrit');
+                
+                return `
+                    <div class="shloka-card" id="verse-card-${v.shloka}">
+                        <div class="shloka-text">${formatShlokaText(v.shloka_text)}</div>
+                        
+                        ${v.transliteration && !isSanskritOnly ? `<div class="transliteration">${v.transliteration}</div>` : ''}
+                        
+                        <div class="meaning-section ${isSanskritOnly ? 'hidden' : ''}">
+                            ${v.translation ? `
+                                <div class="section-block">
+                                    <div class="meaning-title">Word Meanings</div>
+                                    <div class="word-meaning">${v.translation}</div>
+                                </div>
+                            ` : ''}
+                            
+                            ${v.explanation ? `
+                                <div class="section-block">
+                                    <div class="meaning-title">Translation</div>
+                                    <div class="explanation">${v.explanation}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${v.comments && !isSanskritOnly ? `
+                            <div class="comments">
+                                <strong>Comments:</strong> ${v.comments}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+            
+            container.parentElement.scrollTop = 0;
+        }
+
+        function formatShlokaText(text) {
+            if (!text) return '';
+            
+            // 1. Break after the single danda (first half of the verse)
+            let formatted = text.replace(/।\s+/g, '।<br>');
+            
+            // 2. Clean up any accidental line breaks right before the verse numbering
+            formatted = formatted.replace(/॥\s*<br>\s*(?=\d)/g, '॥ ');
+            
+            return formatted;
+        }
+
+        function scrollToShloka(shlokaId) {
+            document.querySelectorAll('.index-item').forEach(item => item.classList.remove('active'));
+            const indexElem = document.getElementById(`idx-${shlokaId}`);
+            if (indexElem) indexElem.classList.add('active');
+
+            const cardElem = document.getElementById(`verse-card-${shlokaId}`);
+            if (cardElem) {
+                cardElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    </script>
+</body>
+</html>
